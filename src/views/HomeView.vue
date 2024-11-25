@@ -1,109 +1,61 @@
 <template>
-  <div class="home">
-    <InputFieldGroup ref="inputGroup">
-      <InputField title="First input" input-type="number" />
-      <InputField title="Second input" input-type="number" />
-      <InputField title="Third input" input-type="number" />
-      <InputField title="Fourth input" input-type="number" />
-      <InputField title="Fifth input" input-type="number" />
-      <InputField title="Sixth input" input-type="number" />
-    </InputFieldGroup>
-
-    <button class="submit-inputs" @click="handleCompute">Compute 🔥</button>
-
-    <!-- Render the ECharts line chart -->
-    <div v-if="isChartVisible" class="mock-graph">
-      <v-chart :option="chartOptions" autoresize />
-    </div>
+  <div class="home-view">
+    <h1>Monte-Cristo</h1>
+    <InputsHolder :fields="fields" @update:fields="handleFieldsUpdate" />
   </div>
 </template>
 
 <script>
-import { defineComponent } from 'vue';
-import InputField from '@/components/InputField.vue';
-import InputFieldGroup from '@/components/InputFieldGroup.vue';
-import { use } from 'echarts/core';
-import { CanvasRenderer } from 'echarts/renderers';
-import { LineChart } from 'echarts/charts';
-import { GridComponent, TooltipComponent, TitleComponent, LegendComponent } from 'echarts/components';
-import VChart from 'vue-echarts';
-
-use([
-  CanvasRenderer,
-  LineChart,
-  GridComponent,
-  TooltipComponent,
-  TitleComponent,
-  LegendComponent
-]);
-
-export default defineComponent({
-  name: 'HomeView',
+import InputsHolder from '@/components/InputsHolder.vue';
+export default {
   components: {
-    InputField,
-    InputFieldGroup,
-    VChart // Register the ECharts component
+    InputsHolder,
   },
   data() {
     return {
-      isChartVisible: false,
-      chartOptions: {
-        title: {
-          text: 'Mock Data Line Chart'
-        },
-        tooltip: {
-          trigger: 'axis'
-        },
-        legend: {
-          data: ['Mock Data']
-        },
-        xAxis: {
-          type: 'category',
-          data: ['January', 'February', 'March', 'April', 'May']
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [
-          {
-            name: 'Mock Data',
-            type: 'line',
-            data: [10, 5, 30, 25, 45]
-          }
-        ]
-      }
+      fields: [
+        { label: 'Input 1', type: 'number', value: 0 },
+        { label: 'Input 2', type: 'number', value: 0 },
+        { label: 'Input 3', type: 'number', value: 0 },
+        { label: 'Input 4', type: 'number', value: 0 },
+        { label: 'Input 5', type: 'number', value: 0 },
+        { label: 'Input 6', type: 'number', value: 0 },
+      ],
     };
   },
   methods: {
-    handleCompute() {
-      this.isChartVisible = true;
-    }
-  }
-});
+    handleFieldsUpdate(updatedFields) {
+      console.log('Updated Fields:', updatedFields);
+      this.fields = updatedFields;
+    },
+  },
+};
 </script>
 
 <style scoped>
-.submit-inputs {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: #42b983;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+</style>
+
+<style scoped>
+.home-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  margin: 0 auto;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.submit-inputs:hover {
-  background-color: #2c3e50;
-}
-
-.mock-graph {
-  margin: 20px auto 0;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  height: 400px;
-  max-width: min(800px, 80%);
+.home-view h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-family: 'Roboto', sans-serif;
 }
 </style>

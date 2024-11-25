@@ -1,22 +1,30 @@
 <template>
   <div class="input-field">
-    <label>{{ title }}</label>
-    <input :type="inputType" ref="inputField" />
+    <label v-if="label">{{ label }}</label>
+    <input
+      :type="type"
+      :value="value"
+      @input="$emit('update', $event.target.value)"
+    />
   </div>
 </template>
 
 <script>
 export default {
-  name: 'InputField',
   props: {
-    title: String,
-    inputType: String
+    label: {
+      type: String,
+      default: '',
+    },
+    type: {
+      type: String,
+      default: 'text',
+    },
+    value: {
+      type: [String, Number, Boolean],
+      default: 0,
+    },
   },
-  methods: {
-    getInputValue() {
-      return this.$refs.inputField.value;
-    }
-  }
 };
 </script>
 
@@ -24,32 +32,28 @@ export default {
 .input-field {
   display: flex;
   flex-direction: column;
-  margin: 15px 0;
-  font-family: Arial, sans-serif;
+  width: 150px;
+  font-family: 'Roboto', sans-serif;
 }
 
-label {
+.input-field label {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   margin-bottom: 5px;
-  color: #333;
+  color: #2c3e50;
 }
 
-input {
-  padding: 10px;
+.input-field input {
   font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 8px;
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input-field input:focus {
   outline: none;
-  transition: border 0.3s ease, box-shadow 0.3s ease;
-}
-
-input:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-}
-
-input:hover {
-  border-color: #0056b3;
+  border-color: #3498db;
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
 }
 </style>
