@@ -1,10 +1,11 @@
 <template>
   <div class="input-field">
-    <label v-if="label">{{ label }}</label>
+    <label v-if="label" :for="id">{{ label }}</label>
     <input
       :type="type"
       :value="value"
-      @input="$emit('update', $event.target.value)"
+      :id="id"
+      @input="handleInput"
     />
   </div>
 </template>
@@ -12,6 +13,10 @@
 <script>
 export default {
   props: {
+    id: {
+      type: String,
+      required: true,
+    },
     label: {
       type: String,
       default: '',
@@ -22,7 +27,12 @@ export default {
     },
     value: {
       type: [String, Number, Boolean],
-      default: 0,
+      default: '',
+    },
+  },
+  methods: {
+    handleInput(event) {
+      this.$emit('update', { id: this.id, value: event.target.value });
     },
   },
 };

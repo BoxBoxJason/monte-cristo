@@ -1,7 +1,7 @@
 <template>
   <div class="home-view">
     <h1>Monte-Cristo</h1>
-    <InputsHolder :fields="fields" @update:fields="handleFieldsUpdate" />
+    <InputsHolder :fields="fields" @update:fields="handleFieldsUpdate" graph-name="pie_chart" />
   </div>
 </template>
 
@@ -14,12 +14,12 @@ export default {
   data() {
     return {
       fields: [
-        { label: 'Input 1', type: 'number', value: 0 },
-        { label: 'Input 2', type: 'number', value: 0 },
-        { label: 'Input 3', type: 'number', value: 0 },
-        { label: 'Input 4', type: 'number', value: 0 },
-        { label: 'Input 5', type: 'number', value: 0 },
-        { label: 'Input 6', type: 'number', value: 0 },
+        { label: 'Input 1', type: 'number', value: 0, id: 'input1' },
+        { label: 'Input 2', type: 'number', value: 0, id: 'input2' },
+        { label: 'Input 3', type: 'number', value: 0, id: 'input3' },
+        { label: 'Input 4', type: 'number', value: 0, id: 'input4' },
+        { label: 'Input 5', type: 'number', value: 0, id: 'input5' },
+        { label: 'Input 6', type: 'number', value: 0, id: 'input6' },
       ],
     };
   },

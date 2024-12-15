@@ -1,8 +1,8 @@
 <template>
   <div class="inputs-holder">
     <div class="inputs-container">
-      <div v-for="(field, index) in localFields" :key="index">
-        <InputField :type="field.type" :value="field.value" :label="field.label" @update="updateField(index, $event)" />
+      <div v-for="field in localFields" :key="field.id">
+        <InputField :id="field.id" :type="field.type" :value="field.value" :label="field.label" @update="updateField" />
       </div>
     </div>
     <button @click="calculate" class="calculate-button">Calculate</button>
@@ -20,6 +20,10 @@ export default {
       type: Array,
       required: true,
     },
+    graphName: {
+      type: String,
+      required: true,
+    },
   },
   components: {
     InputField,
@@ -27,31 +31,64 @@ export default {
   },
   data() {
     return {
-      localFields: JSON.parse(JSON.stringify(this.fields)),
+      // Convert fields to an object indexed by id for easier access
+      localFields: this.fields.reduce((acc, field) => {
+        acc[field.id] = { ...field };
+        return acc;
+      }, {}),
       showGraph: false,
-      graphData: [],
+      graphData: {},
     };
   },
   methods: {
-    updateField(index, value) {
-      this.localFields[index].value = Number(value);
-      this.$emit('update:fields', this.localFields);
-      this.updateGraphData();
+    updateField({ id, value }) {
+      if (this.localFields[id]) {
+        this.localFields[id].value = Number(value);
+        this.$emit(
+          'update:fields',
+          Object.values(this.localFields) // Emit as an array to preserve original structure
+        );
+        this.updateGraphData();
+      }
     },
     calculate() {
-      this.graphData = this.localFields.map((field) => field.value);
-      this.showGraph = true;
+      // Convert the localFields object into query parameters
+      const requestParams = Object.keys(this.localFields).reduce((acc, id) => {
+        acc[id] = this.localFields[id].value;
+        return acc;
+      }, {});
+      const queryString = new URLSearchParams(requestParams).toString(); // Create a query string
+
+      // Use query string in the GET request
+      fetch(`http://localhost:8000/graph/${this.graphName}?${queryString}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          this.graphData = data;
+          this.showGraph = true;
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
     },
     updateGraphData() {
-      if (this.showGraph) {
-        this.graphData = this.localFields.map((field) => field.value);
-      }
+      this.graphData = Object.keys(this.localFields).reduce((acc, id) => {
+        acc[id] = this.localFields[id].value;
+        return acc;
+      }, {});
     },
   },
   watch: {
     fields: {
       handler(newFields) {
-        this.localFields = JSON.parse(JSON.stringify(newFields));
+        this.localFields = newFields.reduce((acc, field) => {
+          acc[field.id] = { ...field };
+          return acc;
+        }, {});
       },
       deep: true,
     },
@@ -72,7 +109,6 @@ export default {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  /* Space between inputs */
   justify-content: flex-start;
 }
 

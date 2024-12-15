@@ -8,7 +8,7 @@ import * as echarts from 'echarts';
 export default {
   props: {
     data: {
-      type: Array,
+      type: Object,
       required: true,
     },
   },
@@ -26,21 +26,7 @@ export default {
   },
   methods: {
     renderChart() {
-      this.chart.setOption({
-        xAxis: {
-          type: 'category',
-          data: this.data.map((_, index) => `Input ${index + 1}`),
-        },
-        yAxis: {
-          type: 'value',
-        },
-        series: [
-          {
-            data: this.data,
-            type: 'bar',
-          },
-        ],
-      });
+      this.chart.setOption(this.data);
     },
   },
 };
